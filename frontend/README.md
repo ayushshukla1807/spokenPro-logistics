@@ -1,44 +1,36 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# SpokenPro Logistics Dashboard
 
-## Getting Started
+Hey! This is my submission for the Full Stack Dashboard + API Integration assignment (Candidate A).
 
-First, run the development server:
+I built out a mini Logistics Intelligence Dashboard to track orders, couriers, and RTO risk scores. It's built as a full-stack Next.js application, so the frontend and backend APIs are all contained in one place.
 
+## Tech Stack
+- **Frontend:** Next.js (App Router), React, Tailwind CSS
+- **Backend:** Next.js API Routes
+- **Database:** PostgreSQL (using Prisma ORM)
+- **Bonus:** Upstash Redis (for API caching) and Docker
+
+## Features Implemented
+- Full orders table with all the required fields (Order ID, Customer Name, Phone, COD Amount, Courier Partner, Status, RTO Risk Score).
+- API integration with GET, POST, and PATCH routes to handle the data.
+- Filters working for status, courier, and risk score. I also added a global search bar for customer name and phone number.
+- Dashboard stats (Total Orders, Delivered, RTO%, COD Pending) calculate dynamically from the entire database via a custom `/api/stats` endpoint.
+- Redis caching layer on the API routes to keep responses fast, with cache invalidation when new orders are created or updated.
+
+## How to run locally
+
+If you want to run the Next.js app manually:
+1. Clone the repo
+2. Run `npm install`
+3. Add a `.env` file with your `DATABASE_URL` and Upstash Redis keys.
+4. Run `npx prisma generate` to set up the client.
+5. Run `npm run dev` and open `localhost:3000`.
+
+### Running with Docker (Bonus)
+I also added a docker-compose setup if that's easier to test:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+docker-compose up --build
 ```
+This will spin up the Next.js app, a local Postgres database, and a local Redis instance automatically.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
- 
-  
-   
-    
- 
-  
-   
-    
+Let me know if you run into any issues getting it to run!
