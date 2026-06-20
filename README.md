@@ -1,5 +1,7 @@
 # SpokenPro Logistics Dashboard
 
+**Live Demo:** [https://spokenpro-assignment.vercel.app](https://spokenpro-assignment.vercel.app)
+
 Hey! This is my submission for the Full Stack Dashboard + API Integration assignment (Candidate A).
 
 I built out a mini Logistics Intelligence Dashboard to track orders, couriers, and RTO risk scores. It's built as a full-stack Next.js application, so the frontend and backend APIs are all contained in one place.
