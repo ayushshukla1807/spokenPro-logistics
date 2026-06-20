@@ -319,6 +319,7 @@ export default function Dashboard() {
                     <th className="px-6 py-4">Order Details</th>
                     <th className="px-6 py-4">Customer</th>
                     <th className="px-6 py-4">Amount</th>
+                    <th className="px-6 py-4">Courier Partner</th>
                     <th className="px-6 py-4">Status</th>
                     <th className="px-6 py-4">RTO Prediction</th>
                     <th className="px-6 py-4 text-right">Actions</th>
@@ -327,7 +328,7 @@ export default function Dashboard() {
                 <tbody className="divide-y divide-zinc-200">
                   {loading ? (
                     <tr>
-                      <td colSpan={6} className="px-6 py-12 text-center text-zinc-500">
+                      <td colSpan={7} className="px-6 py-12 text-center text-zinc-500">
                         <div className="flex items-center justify-center gap-2">
                           <div className="w-2 h-2 rounded-full bg-blue-600 animate-bounce" style={{ animationDelay: "0ms" }} />
                           <div className="w-2 h-2 rounded-full bg-blue-600 animate-bounce" style={{ animationDelay: "150ms" }} />
@@ -337,7 +338,7 @@ export default function Dashboard() {
                     </tr>
                   ) : orders.length === 0 ? (
                     <tr>
-                      <td colSpan={6} className="px-6 py-12 text-center text-zinc-500">
+                      <td colSpan={7} className="px-6 py-12 text-center text-zinc-500">
                         <PackageOpen className="w-8 h-8 mx-auto text-zinc-300 mb-2" />
                         <p>No shipments found matching your criteria.</p>
                       </td>
@@ -364,6 +365,9 @@ export default function Dashboard() {
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
                             <span className="font-semibold text-zinc-900">₹{Number(order.codAmount).toLocaleString()}</span>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <span className="text-sm font-medium text-zinc-700">{order.courier?.name}</span>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
                             <span className={`inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold border ${getStatusBadge(order.status)}`}>
