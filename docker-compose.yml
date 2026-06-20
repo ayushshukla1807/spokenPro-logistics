@@ -1,26 +1,35 @@
+version: '3.8'
+
 services:
-  postgres:
-    image: postgres:15-alpine
-    container_name: spokenpro_db
+  web:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: your_password
-      POSTGRES_DB: logistics_db
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/spokenpro
+      - UPSTASH_REDIS_REST_URL=http://redis:8080
+      - UPSTASH_REDIS_REST_TOKEN=local
+    depends_on:
+      - db
+      - redis
+
+  db:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=spokenpro
     ports:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
-    restart: unless-stopped
 
   redis:
-    image: redis:7-alpine
-    container_name: spokenpro_redis
+    image: eqalpha/keydb:latest
     ports:
       - "6379:6379"
-    volumes:
-      - redisdata:/data
-    restart: unless-stopped
 
 volumes:
   pgdata:
-  redisdata:
