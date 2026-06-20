@@ -64,7 +64,6 @@ export default function Dashboard() {
   const [showStatusModal, setShowStatusModal] = useState<Order | null>(null);
   const [newOrder, setNewOrder] = useState({ customerName: "", phone: "", courierId: "", codAmount: "" });
   const [submitting, setSubmitting] = useState(false);
-  const [seeding, setSeeding] = useState(false);
   const [page, setPage] = useState(1);
 
   const fetchOrders = useCallback(async () => {
@@ -136,16 +135,6 @@ export default function Dashboard() {
       fetchOrders();
     } catch {
       alert("Failed to update status.");
-    }
-  };
-
-  const handleSeed = async () => {
-    setSeeding(true);
-    try {
-      await fetch("/api/seed", { method: "POST" });
-      fetchOrders();
-    } finally {
-      setSeeding(false);
     }
   };
 
@@ -224,25 +213,20 @@ export default function Dashboard() {
               </span>
             )}
             {dbConnected && (
-              <button 
-                onClick={handleSeed}
-                disabled={seeding}
-                className="text-xs font-medium text-zinc-600 hover:text-zinc-900 bg-white border border-zinc-200 hover:bg-zinc-50 px-3 py-1.5 rounded-lg shadow-sm transition-all"
-              >
-                {seeding ? "Seeding..." : "Seed Mock Data"}
-              </button>
+              <>
+                <button className="relative p-2 text-zinc-400 hover:text-zinc-600 transition-colors">
+                  <Bell className="w-5 h-5" />
+                  <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
+                </button>
+                <button 
+                  onClick={() => setShowModal(true)}
+                  className="flex items-center gap-2 bg-zinc-900 hover:bg-zinc-800 text-white text-sm font-medium px-4 py-2 rounded-lg shadow-sm transition-all active:scale-95"
+                >
+                  <Plus className="w-4 h-4" />
+                  Create Order
+                </button>
+              </>
             )}
-            <button className="relative p-2 text-zinc-400 hover:text-zinc-600 transition-colors">
-              <Bell className="w-5 h-5" />
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
-            </button>
-            <button 
-              onClick={() => setShowModal(true)}
-              className="flex items-center gap-2 bg-zinc-900 hover:bg-zinc-800 text-white text-sm font-medium px-4 py-2 rounded-lg shadow-sm transition-all active:scale-95"
-            >
-              <Plus className="w-4 h-4" />
-              Create Order
-            </button>
           </div>
         </header>
 
