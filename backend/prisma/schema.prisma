@@ -1,0 +1,61 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Customer {
+  id         String   @id @default(uuid()) @db.Uuid
+  name       String   @db.VarChar(255)
+  phone      String   @unique @db.VarChar(20)
+  createdAt  DateTime @default(now()) @map("created_at")
+  orders     Order[]
+
+  @@map("customers")
+}
+
+model Courier {
+  id         String   @id @default(uuid()) @db.Uuid
+  name       String   @db.VarChar(100)
+  code       String   @unique @db.VarChar(50)
+  isActive   Boolean  @default(true) @map("is_active")
+  orders     Order[]
+
+  @@map("couriers")
+}
+
+model Order {
+  id              String               @id @default(uuid()) @db.Uuid
+  customerId      String               @map("customer_id") @db.Uuid
+  courierId       String               @map("courier_id") @db.Uuid
+  codAmount       Decimal              @map("cod_amount") @db.Decimal(10, 2)
+  status          String               @db.VarChar(50)
+  rtoRiskScore    Int                  @map("rto_risk_score")
+  createdAt       DateTime             @default(now()) @map("created_at")
+  updatedAt       DateTime             @default(now()) @updatedAt @map("updated_at")
+
+  customer        Customer             @relation(fields: [customerId], references: [id])
+  courier         Courier              @relation(fields: [courierId], references: [id])
+  statusHistory   OrderStatusHistory[]
+
+  @@index([status])
+  @@index([courierId])
+  @@index([createdAt])
+  @@index([rtoRiskScore])
+  @@map("orders")
+}
+
+model OrderStatusHistory {
+  id         String   @id @default(uuid()) @db.Uuid
+  orderId    String   @map("order_id") @db.Uuid
+  oldStatus  String?  @map("old_status") @db.VarChar(50)
+  newStatus  String   @map("new_status") @db.VarChar(50)
+  changedAt  DateTime @default(now()) @map("changed_at")
+
+  order      Order    @relation(fields: [orderId], references: [id])
+
+  @@map("order_status_history")
+}
