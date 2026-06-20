@@ -15,9 +15,10 @@ export async function GET(request: NextRequest) {
     const status = searchParams.get("status");
     const courier = searchParams.get("courier");
     const risk = searchParams.get("risk");
+    const search = searchParams.get("search");
 
     // Cache key based on query params
-    const cacheKey = `orders:${page}:${limit}:${status || 'all'}:${courier || 'all'}:${risk || 'all'}`;
+    const cacheKey = `orders:${page}:${limit}:${status || 'all'}:${courier || 'all'}:${risk || 'all'}:${search || 'all'}`;
 
     if (redis) {
       const cached = await redis.get(cacheKey);
@@ -36,6 +37,13 @@ export async function GET(request: NextRequest) {
     if (risk === "HIGH") where.rtoRiskScore = { gte: 80 };
     else if (risk === "MEDIUM") where.rtoRiskScore = { gte: 40, lt: 80 };
     else if (risk === "LOW") where.rtoRiskScore = { lt: 40 };
+    
+    if (search) {
+      where.OR = [
+        { customer: { name: { contains: search, mode: "insensitive" } } },
+        { customer: { phone: { contains: search, mode: "insensitive" } } }
+      ];
+    }
 
     const [orders, total] = await Promise.all([
       prisma.order.findMany({

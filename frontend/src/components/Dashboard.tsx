@@ -27,6 +27,7 @@ type Filters = {
   status: string;
   courier: string;
   risk: string;
+  search: string;
 };
 
 const STATUSES = ["CREATED", "PICKED_UP", "IN_TRANSIT", "OUT_FOR_DELIVERY", "DELIVERED", "RTO"];
@@ -59,7 +60,8 @@ export default function Dashboard() {
   const [globalStats, setGlobalStats] = useState({ totalOrders: 0, deliveredOrders: 0, rtoPercentage: "0.0%", codPending: 0 });
   const [loading, setLoading] = useState(true);
   const [dbConnected, setDbConnected] = useState(true);
-  const [filters, setFilters] = useState<Filters>({ status: "", courier: "", risk: "" });
+  const [filters, setFilters] = useState<Filters>({ status: "", courier: "", risk: "", search: "" });
+  const [searchInput, setSearchInput] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [showStatusModal, setShowStatusModal] = useState<Order | null>(null);
   const [newOrder, setNewOrder] = useState({ customerName: "", phone: "", courierId: "", codAmount: "" });
@@ -75,6 +77,7 @@ export default function Dashboard() {
       if (filters.status) q.set("status", filters.status);
       if (filters.courier) q.set("courier", filters.courier);
       if (filters.risk) q.set("risk", filters.risk);
+      if (filters.search) q.set("search", filters.search);
 
       const [res, statsRes] = await Promise.all([
         fetch(`/api/orders?${q}`),
@@ -102,6 +105,14 @@ export default function Dashboard() {
 
   // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { fetchOrders(); }, [fetchOrders]);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setFilters(f => ({ ...f, search: searchInput }));
+      setPage(1);
+    }, 400);
+    return () => clearTimeout(handler);
+  }, [searchInput]);
 
   const handleCreateOrder = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -201,8 +212,10 @@ export default function Dashboard() {
               <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400" />
               <input 
                 type="text" 
-                placeholder="Search orders, customers..." 
+                placeholder="Search customers..." 
                 className="w-full pl-9 pr-4 py-2 bg-zinc-50 border border-zinc-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
               />
             </div>
           </div>
